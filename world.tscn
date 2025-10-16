@@ -1,0 +1,75 @@
+[gd_scene load_steps=8 format=3 uid="uid://bejufuo11rnll"]
+
+[ext_resource type="Texture2D" uid="uid://ckydp3ucka0bj" path="res://assets/Untitled design.png" id="1_fj7yv"]
+[ext_resource type="Script" uid="uid://c0e7l8soa65fk" path="res://movement.gd" id="2_aqk2v"]
+[ext_resource type="Texture2D" uid="uid://dtrvduh4njhaq" path="res://assets/cot.png" id="3_tlwt5"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_aqk2v"]
+vertices = PackedVector2Array(1162.08, 743.227, 1161.09, 631.742, 1257, 638.594, 1338.36, 778.953, 931.617, 860.867, 1029.4, 753.797, 864.531, 629.031, 1024.39, 621.461, 494.898, 808.242, 691.141, 604.539, 640.203, 649.117, 499.602, 760.508, 623.672, 635.508)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(0, 3, 4, 5), PackedInt32Array(6, 7, 5, 4, 8), PackedInt32Array(9, 6, 8, 10), PackedInt32Array(10, 8, 11, 12)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(490, 756, 623, 622, 640, 636, 688, 594, 865, 619, 1034, 611, 1039, 743, 1152, 734, 1151, 621, 1263, 629, 1354, 786, 932, 871, 484, 817)])
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_tlwt5"]
+vertices = PackedVector2Array(1215.77, 493.797, 1216.17, 498.562, 1024.27, 508.906, 960.344, 488.453, 960.422, 488.156)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(948, 495, 1023, 519, 1227, 508, 1225, 484, 953, 478)])
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_036b0"]
+vertices = PackedVector2Array(1168.43, 623.688, 1167.57, 638.711, 1020.17, 634.32, 1021.89, 619.273)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(1013, 609, 1179, 614, 1177, 649, 1009, 644)])
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_036b0"]
+size = Vector2(64, 65)
+
+[node name="World" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("1_fj7yv")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_aqk2v")
+
+[node name="Window" type="NavigationRegion2D" parent="NavigationRegion2D"]
+navigation_polygon = SubResource("NavigationPolygon_tlwt5")
+navigation_layers = 2
+
+[node name="NavigationLink2D" type="NavigationLink2D" parent="NavigationRegion2D"]
+position = Vector2(1108, 709)
+start_position = Vector2(-88, 20)
+end_position = Vector2(59, -4)
+metadata/link_type = "squish"
+metadata/position = Vector2(0, 0)
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="NavigationRegion2D"]
+navigation_polygon = SubResource("NavigationPolygon_036b0")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(821, 728)
+script = ExtResource("2_aqk2v")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+position = Vector2(0, -55)
+texture = ExtResource("3_tlwt5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(0, -32.5)
+shape = SubResource("RectangleShape2D_036b0")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="CharacterBody2D"]
+debug_enabled = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(953, 558)
+
+[node name="Button" type="Button" parent="."]
+offset_left = 509.0
+offset_top = 623.0
+offset_right = 550.0
+offset_bottom = 654.0
+text = "EXIT"
+
+[connection signal="link_reached" from="CharacterBody2D/NavigationAgent2D" to="CharacterBody2D" method="_on_navigation_agent_2d_link_reached"]
+[connection signal="velocity_computed" from="CharacterBody2D/NavigationAgent2D" to="CharacterBody2D" method="_on_navigation_agent_2d_velocity_computed"]
