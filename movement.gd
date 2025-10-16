@@ -163,19 +163,86 @@ func is_position_on_navigation_map(position: Vector2) -> bool:
 	return distance < distance_threshold
 
 # Helper function to detect which navigation layer was clicked
-# Returns: 1 = layer 1, 2 = layer 2
+# Returns: 1 = layer 1, 2 = layer 2, etc.
 func get_clicked_navigation_layer(position: Vector2) -> int:
-	# For simplicity, we'll check proximity to known Window region
-	# The Window region is roughly at position 1024, 507 based on the scene
-	var window_center = Vector2(1050, 507)
-	var distance_to_window = position.distance_to(window_center)
+	var map = nav_agent.get_navigation_map()
 	
-	# If click is near the window region (within 100 pixels), it's layer 2
-	if distance_to_window < 100:
-		return 2
+	# Get all navigation regions in the scene
+	var scene_root = get_tree().current_scene
+	var nav_regions = find_navigation_regions(scene_root)
 	
-	# Otherwise, it's the main navigation layer
+	# Check each navigation region to see if the position is within it
+	for region in nav_regions:
+		if region is NavigationRegion2D:
+			var nav_poly = region.navigation_polygon
+			if nav_poly == null:
+				continue
+			
+			# Transform the world position to the region's local space
+			var local_pos = region.to_local(position)
+			
+			# Check if the position is inside any polygon of this region
+			if is_point_in_navigation_polygon(local_pos, nav_poly):
+				# Get the navigation layers for this region
+				var layers = region.navigation_layers
+				
+				# Return the first enabled layer (1-indexed)
+				for i in range(32):  # Navigation layers are 32-bit
+					if layers & (1 << i):
+						return i + 1
+				
+				# If no specific layer is set, return 1 (default layer)
+				return 1
+	
+	# Default to layer 1 if not found in any specific region
 	return 1
+
+# Helper function to recursively find all NavigationRegion2D nodes
+func find_navigation_regions(node: Node) -> Array:
+	var regions = []
+	
+	if node is NavigationRegion2D:
+		regions.append(node)
+	
+	for child in node.get_children():
+		regions.append_array(find_navigation_regions(child))
+	
+	return regions
+
+# Check if a point is inside a navigation polygon
+func is_point_in_navigation_polygon(point: Vector2, nav_poly: NavigationPolygon) -> bool:
+	var polygons = nav_poly.polygons
+	var vertices = nav_poly.vertices
+	
+	# Check each polygon
+	for polygon in polygons:
+		var poly_points = []
+		for idx in polygon:
+			if idx < vertices.size():
+				poly_points.append(vertices[idx])
+		
+		# Use point-in-polygon test
+		if is_point_in_polygon(point, poly_points):
+			return true
+	
+	return false
+
+# Point-in-polygon algorithm (ray casting)
+func is_point_in_polygon(point: Vector2, polygon: Array) -> bool:
+	var inside = false
+	var j = polygon.size() - 1
+	
+	for i in range(polygon.size()):
+		var vi = polygon[i]
+		var vj = polygon[j]
+		
+		if ((vi.y > point.y) != (vj.y > point.y)) and \
+		   (point.x < (vj.x - vi.x) * (point.y - vi.y) / (vj.y - vi.y) + vi.x):
+			inside = !inside
+		
+		j = i
+	
+	return inside
 
 # Animate the transition from current position to target position on new layer
 func animate_layer_transition() -> void:

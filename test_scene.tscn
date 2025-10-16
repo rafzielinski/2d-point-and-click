@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://dptfqeua8r40y"]
+
+[ext_resource type="Script" uid="uid://71eltu6pvdny" path="res://scene_exit_button.gd" id="1_g7h4n"]
+[ext_resource type="Texture2D" uid="uid://bfal1thigpujb" path="res://assets/Untitled design(2).png" id="1_sasra"]
+[ext_resource type="PackedScene" uid="uid://dvxxhc3k3qmb2" path="res://player.tscn" id="2_player"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_coq8p"]
+vertices = PackedVector2Array(372.656, 337.047, 289.32, 341.211, 330.68, 241.961, 656.312, 240.07, 541.297, 298.898, 640.258, 307.312, 934.023, 334.891, 806.008, 313.828, 819.062, 253.93, 921.43, 253.07)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(3, 5, 4), PackedInt32Array(6, 7, 8, 9)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(324, 232, 669, 230, 648, 318, 542, 309, 374, 347, 274, 352), PackedVector2Array(811, 244, 930, 243, 946, 347, 794, 322)])
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_test"]
+vertices = PackedVector2Array(966.023, 559.156, 984.078, 507.961, 1046.99, 648.867, 1024.71, 695.898, 194.82, 683.219, 280.672, 474.062, 951.539, 558.844, 927.562, 479.93)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2), PackedInt32Array(2, 3, 4, 5, 6), PackedInt32Array(5, 7, 6), PackedInt32Array(2, 6, 0)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(274, 464, 935, 470, 959, 549, 983, 481, 1058, 649, 1031, 706, 180, 693)])
+
+[node name="TestScene" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1200.0
+offset_bottom = 800.0
+color = Color(0.2, 0.3, 0.5, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -298.0
+offset_top = -228.0
+offset_right = 1622.0
+offset_bottom = 852.0
+texture = ExtResource("1_sasra")
+
+[node name="Window" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_coq8p")
+navigation_layers = 2
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="Window"]
+vertices = PackedVector2Array(335, 279, 493, 263, 494, 306, 323, 329)
+avoidance_layers = 3
+
+[node name="NavigationLink2D" type="NavigationLink2D" parent="Window"]
+position = Vector2(737, 273)
+navigation_layers = 2
+start_position = Vector2(-102, -4)
+end_position = Vector2(90, 2)
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_test")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(600, 590)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(600, 400)
+
+[node name="BackButton" type="Button" parent="."]
+offset_left = 805.0
+offset_top = 543.0
+offset_right = 1005.0
+offset_bottom = 593.0
+text = "Back to World"
+script = ExtResource("1_g7h4n")
+target_scene = "res://world.tscn"

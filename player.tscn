@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dvxxhc3k3qmb2"]
+
+[ext_resource type="Script" uid="uid://c0e7l8soa65fk" path="res://movement.gd" id="1_movement"]
+[ext_resource type="Texture2D" uid="uid://dtrvduh4njhaq" path="res://assets/cot.png" id="2_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(64, 65)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_movement")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -55)
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -32.5)
+shape = SubResource("RectangleShape2D_player")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true
+
+[connection signal="link_reached" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_link_reached"]
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
