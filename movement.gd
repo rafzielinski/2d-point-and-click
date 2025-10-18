@@ -25,13 +25,16 @@ var final_target_position: Vector2 = Vector2.ZERO
 var is_animating_transition: bool = false
 
 
-func _ready() -> void:	
+func _ready() -> void:
 	# Configure NavigationAgent properties
 	nav_agent.path_desired_distance = 4.0
 	nav_agent.target_desired_distance = 10.0
 	
 	# Wait for the first physics frame so the NavigationServer can sync
 	await get_tree().physics_frame
+	
+	# Initialize cursor for current layer
+	CursorManager.update_cursor_for_layer(current_nav_layer)
 
 
 func _input(event: InputEvent) -> void:
@@ -284,5 +287,8 @@ func switch_to_layer(layer: int) -> void:
 	# Update the NavigationAgent to use the new layer
 	nav_agent.set_navigation_layer_value(1, layer == 1)
 	nav_agent.set_navigation_layer_value(2, layer == 2)
+	
+	# Update cursor manager
+	CursorManager.update_cursor_for_layer(layer)
 	
 	print("Switched to navigation layer: ", layer)

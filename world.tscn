@@ -1,13 +1,20 @@
-[gd_scene load_steps=7 format=3 uid="uid://bejufuo11rnll"]
+[gd_scene load_steps=11 format=3 uid="uid://bejufuo11rnll"]
 
 [ext_resource type="Texture2D" uid="uid://ckydp3ucka0bj" path="res://assets/Untitled design.png" id="1_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://dvxxhc3k3qmb2" path="res://player.tscn" id="2_player"]
+[ext_resource type="Script" uid="uid://ee1d8dfl0100" path="res://interactive_area.gd" id="3_interactive"]
 [ext_resource type="Script" uid="uid://71eltu6pvdny" path="res://scene_exit_button.gd" id="4_exit_button"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_036b0"]
+size = Vector2(972, 701)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_tlwt5"]
 vertices = PackedVector2Array(1215.77, 493.797, 1216.17, 498.562, 1024.27, 508.906, 960.344, 488.453, 960.422, 488.156)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(948, 495, 1023, 519, 1227, 508, 1225, 484, 953, 478)])
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aqk2v"]
+size = Vector2(161, 189.5)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_aqk2v"]
 vertices = PackedVector2Array(547.609, 712.156, 459.828, 649.32, 500.617, 603.25, 593.297, 667.031, 1162.08, 743.227, 1161.09, 631.742, 1257, 638.594, 1338.36, 778.953, 931.617, 860.867, 1029.4, 753.797, 864.531, 629.031, 1024.39, 621.461, 494.898, 808.242, 691.141, 604.539, 640.203, 649.117, 499.602, 760.531, 623.758, 635.578)
@@ -19,6 +26,9 @@ vertices = PackedVector2Array(1168.43, 623.688, 1167.57, 638.711, 1020.17, 634.3
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(1013, 609, 1179, 614, 1177, 649, 1009, 644)])
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_item"]
+size = Vector2(80, 80)
+
 [node name="World" type="Node2D"]
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -26,9 +36,26 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 texture = ExtResource("1_fj7yv")
 
+[node name="Base" type="Area2D" parent="."]
+position = Vector2(358, 158)
+script = ExtResource("3_interactive")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Base"]
+position = Vector2(476, 340.5)
+shape = SubResource("RectangleShape2D_036b0")
+debug_color = Color(0.961465, 0.848802, 0.830583, 0.42)
+
 [node name="Window" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_tlwt5")
 navigation_layers = 2
+
+[node name="InteractiveWindowItem" type="Area2D" parent="Window"]
+position = Vector2(1100, 500)
+script = ExtResource("3_interactive")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Window/InteractiveWindowItem"]
+position = Vector2(-355.5, 1.75)
+shape = SubResource("RectangleShape2D_aqk2v")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_aqk2v")
@@ -45,9 +72,19 @@ navigation_polygon = SubResource("NavigationPolygon_036b0")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(821, 728)
+speed = 300.0
+squish_scale = Vector2(1.2, 0.8)
+animation_duration = 0.2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(953, 558)
+
+[node name="InteractiveFloorItem" type="Area2D" parent="."]
+position = Vector2(595, 939)
+script = ExtResource("3_interactive")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractiveFloorItem"]
+shape = SubResource("RectangleShape2D_floor_item")
 
 [node name="Button" type="Button" parent="."]
 offset_left = 478.0
