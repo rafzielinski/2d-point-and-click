@@ -13,7 +13,7 @@ enum CursorType {
 
 # Current cursor state
 var current_cursor_type: CursorType = CursorType.DEFAULT
-var current_navigation_layer: int = 1
+var current_navigation_layer: int = 0  # 0 means no nav layer (default)
 
 # Cursor colors for testing (easily visible colors)
 var cursor_colors: Dictionary = {
@@ -35,13 +35,56 @@ func _ready() -> void:
 	# Hide the system cursor
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
+	# Connect to scene change signal if GameManager exists
+	if GameManager:
+		GameManager.scene_change_requested.connect(_on_scene_change_requested)
+	
 	# Wait a frame to ensure the scene tree is ready
 	await get_tree().process_frame
 	
 	# Create the custom cursor
 	_create_cursor()
 	
-	print("CursorManager initialized - cursor created")
+	# Wait another frame for cursor to be added
+	await get_tree().process_frame
+	
+	# Check initial cursor position and set correct state
+	_check_cursor_state()
+	
+	print("CursorManager initialized - cursor created and initial state set")
+
+
+# Called when scene is about to change
+func _on_scene_change_requested(scene_path: String) -> void:
+	print("Scene changing, cleaning up cursor state")
+	# Clear hovering areas list
+	hovering_areas.clear()
+	# Reset to default state
+	current_navigation_layer = 0
+	_set_cursor_type(CursorType.DEFAULT)
+	
+	# Ensure system cursor stays hidden
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	
+	# Ensure custom cursor is visible
+	if cursor_node:
+		cursor_node.visible = true
+	if cursor_rect:
+		cursor_rect.visible = true
+	
+	# Wait for scene to fully change, then update cursor state
+	_wait_for_scene_change()
+
+
+# Wait for scene change to complete and update cursor
+func _wait_for_scene_change() -> void:
+	# Wait for the deferred scene change to complete
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	# Update cursor state for new scene
+	_check_cursor_state()
+	print("Scene changed, cursor state updated")
 
 
 func _process(delta: float) -> void:
@@ -70,6 +113,7 @@ func _check_cursor_state() -> void:
 			_set_cursor_type(CursorType.LAYER_2)
 		else:
 			_set_cursor_type(CursorType.DEFAULT)
+		print("Cursor layer changed to: ", layer, " (", CursorType.keys()[current_cursor_type], ")")
 
 
 # Create the custom cursor node
@@ -78,10 +122,13 @@ func _create_cursor() -> void:
 	var canvas_layer = CanvasLayer.new()
 	canvas_layer.name = "CursorCanvasLayer"
 	canvas_layer.layer = 100  # High layer number to be on top
+	canvas_layer.visible = true
 	
 	# Create a Node2D as the cursor root
 	cursor_node = Node2D.new()
 	cursor_node.name = "CustomCursor"
+	cursor_node.visible = true
+	cursor_node.z_index = 100  # Ensure it's on top
 	
 	# Create a ColorRect for visual representation
 	cursor_rect = ColorRect.new()
@@ -89,6 +136,7 @@ func _create_cursor() -> void:
 	cursor_rect.position = Vector2(-10, -10)  # Center the cursor
 	cursor_rect.color = cursor_colors[CursorType.DEFAULT]
 	cursor_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Don't block mouse input!
+	cursor_rect.visible = true
 	
 	# Build the hierarchy: CanvasLayer -> Node2D -> ColorRect
 	cursor_node.add_child(cursor_rect)
@@ -171,7 +219,16 @@ func _set_cursor_type(type: CursorType) -> void:
 
 # Get the current cursor position in world coordinates
 func get_cursor_world_position() -> Vector2:
-	return get_viewport().get_mouse_position()
+	# Get mouse position in viewport coordinates
+	var viewport_pos = get_viewport().get_mouse_position()
+	
+	# If there's a camera, we need to transform from screen to world space
+	var camera = get_viewport().get_camera_2d()
+	if camera:
+		# Transform viewport position to world position accounting for camera
+		return viewport_pos + camera.get_screen_center_position() - get_viewport().get_visible_rect().size / 2
+	
+	return viewport_pos
 
 
 # Check which navigation layer is under the cursor
@@ -181,13 +238,14 @@ func get_layer_under_cursor() -> int:
 	# Get the current scene
 	var scene_root = get_tree().current_scene
 	if not scene_root:
-		return 1
+		return 0  # No scene = default cursor
 	
 	# Find all navigation regions
 	var nav_regions = _find_navigation_regions(scene_root)
 	
-	# Check each region to see if cursor is over it
-	for region in nav_regions:
+	# Check each region to see if cursor is over it (check in reverse order for proper layering)
+	for i in range(nav_regions.size() - 1, -1, -1):
+		var region = nav_regions[i]
 		if region is NavigationRegion2D:
 			var nav_poly = region.navigation_polygon
 			if nav_poly == null:
@@ -201,14 +259,16 @@ func get_layer_under_cursor() -> int:
 				# Get the navigation layers for this region
 				var layers = region.navigation_layers
 				
-				# Return the first enabled layer
-				for i in range(32):
-					if layers & (1 << i):
-						return i + 1
+				# Return the first enabled layer (1-based)
+				for j in range(32):
+					if layers & (1 << j):
+						return j + 1
 				
+				# If no layer bits set, treat as layer 1
 				return 1
 	
-	return 1
+	# Not in any navigation region = default cursor (no layer)
+	return 0
 
 
 # Helper function to recursively find all NavigationRegion2D nodes

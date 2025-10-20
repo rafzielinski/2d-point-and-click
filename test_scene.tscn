@@ -42,14 +42,11 @@ navigation_layers = 2
 start_position = Vector2(-102, -4)
 end_position = Vector2(90, 2)
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+[node name="Floor" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_test")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(600, 590)
-speed = 300.0
-squish_scale = Vector2(1.2, 0.8)
-animation_duration = 0.2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(600, 400)

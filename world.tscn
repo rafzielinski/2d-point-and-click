@@ -1,12 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://bejufuo11rnll"]
+[gd_scene load_steps=12 format=3 uid="uid://bejufuo11rnll"]
 
 [ext_resource type="Texture2D" uid="uid://ckydp3ucka0bj" path="res://assets/Untitled design.png" id="1_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://dvxxhc3k3qmb2" path="res://player.tscn" id="2_player"]
 [ext_resource type="Script" uid="uid://ee1d8dfl0100" path="res://interactive_area.gd" id="3_interactive"]
 [ext_resource type="Script" uid="uid://71eltu6pvdny" path="res://scene_exit_button.gd" id="4_exit_button"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_036b0"]
-size = Vector2(972, 701)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_tlwt5"]
 vertices = PackedVector2Array(1215.77, 493.797, 1216.17, 498.562, 1024.27, 508.906, 960.344, 488.453, 960.422, 488.156)
@@ -29,21 +26,18 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(1013, 609, 1179, 614, 1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_item"]
 size = Vector2(80, 80)
 
+[sub_resource type="Gradient" id="Gradient_aqk2v"]
+colors = PackedColorArray(0.768111, 0.256685, 0.545982, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_036b0"]
+gradient = SubResource("Gradient_aqk2v")
+
 [node name="World" type="Node2D"]
 
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_right = 1920.0
 offset_bottom = 1080.0
 texture = ExtResource("1_fj7yv")
-
-[node name="Base" type="Area2D" parent="."]
-position = Vector2(358, 158)
-script = ExtResource("3_interactive")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Base"]
-position = Vector2(476, 340.5)
-shape = SubResource("RectangleShape2D_036b0")
-debug_color = Color(0.961465, 0.848802, 0.830583, 0.42)
 
 [node name="Window" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_tlwt5")
@@ -57,30 +51,26 @@ script = ExtResource("3_interactive")
 position = Vector2(-355.5, 1.75)
 shape = SubResource("RectangleShape2D_aqk2v")
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+[node name="Floor" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_aqk2v")
 
-[node name="NavigationLink2D" type="NavigationLink2D" parent="NavigationRegion2D"]
+[node name="NavigationLink2D" type="NavigationLink2D" parent="Floor"]
 position = Vector2(1108, 709)
 start_position = Vector2(-88, 20)
 end_position = Vector2(59, -4)
 metadata/link_type = "squish"
-metadata/position = Vector2(0, 0)
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="NavigationRegion2D"]
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Floor"]
 navigation_polygon = SubResource("NavigationPolygon_036b0")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(821, 728)
-speed = 300.0
-squish_scale = Vector2(1.2, 0.8)
-animation_duration = 0.2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(953, 558)
 
 [node name="InteractiveFloorItem" type="Area2D" parent="."]
-position = Vector2(595, 939)
+position = Vector2(700, 750)
 script = ExtResource("3_interactive")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractiveFloorItem"]
@@ -94,3 +84,10 @@ offset_bottom = 660.0
 text = "EXIT"
 script = ExtResource("4_exit_button")
 target_scene = "uid://dptfqeua8r40y"
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(636, 622)
+scale = Vector2(1.44531, 372)
+color = Color(1, 0.286275, 1, 1)
+energy = 7.55
+texture = SubResource("GradientTexture1D_036b0")

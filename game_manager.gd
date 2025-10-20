@@ -44,11 +44,18 @@ func change_scene(scene_path: String) -> void:
 
 # Actually perform the scene change (called deferred)
 func _deferred_change_scene(scene_path: String) -> void:
-	# Get the current scene
+	# Get the current scene using Godot's maintained reference
 	var root = get_tree().root
-	var current_scene = root.get_child(root.get_child_count() - 1)
+	var current_scene = get_tree().current_scene
 	
-	# Remove and free the current scene
+	if current_scene == null:
+		push_error("No current scene found")
+		is_changing_scene = false
+		return
+	
+	# IMPORTANT: Remove the scene from tree FIRST, then free it
+	# This ensures it's not in the tree when we add the new scene
+	root.remove_child(current_scene)
 	current_scene.queue_free()
 	
 	# Load the new scene
