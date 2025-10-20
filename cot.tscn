@@ -1,0 +1,220 @@
+[gd_scene load_steps=7 format=3 uid="uid://djahyhs4lvbdn"]
+
+[ext_resource type="Texture2D" uid="uid://f7jr5x2proh3" path="res://assets/cot/body.png" id="1_13amp"]
+[ext_resource type="Texture2D" uid="uid://bfpdkfdbtohpa" path="res://assets/cot/tail.png" id="2_e6j7f"]
+[ext_resource type="Texture2D" uid="uid://cy4jwjnttf1sl" path="res://assets/cot/leg.png" id="3_xao0q"]
+
+[sub_resource type="Animation" id="Animation_13amp"]
+resource_name = "walk"
+length = 1.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Bones/Skeleton2D/Body/Bum/LegBRTop:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4666667, 0.9333334, 1.4333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -1.0768636, 0.21237421, -0.06869382]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Bones/Skeleton2D/Body/Bum/LegBLTop:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.9333334, 1.4333333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, -1.2595612, 0.17135262]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Bones/Skeleton2D/Body/LegFRTop:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.9333334, 1.4333333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, -1.0894463, 0.24635482]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Bones/Skeleton2D/Body/LegFLTop:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4666667, 0.9333334, 1.4333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -1.3434055, 0.1866039, -0.10441804]
+}
+
+[sub_resource type="Animation" id="Animation_e6j7f"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Bones/Skeleton2D/Body/Bum/LegBRTop:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Bones/Skeleton2D/Body/Bum/LegBLTop:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Bones/Skeleton2D/Body/LegFRTop:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Bones/Skeleton2D/Body/LegFLTop:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xao0q"]
+_data = {
+&"RESET": SubResource("Animation_e6j7f"),
+&"walk": SubResource("Animation_13amp")
+}
+
+[node name="Cot" type="Node2D"]
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="Body" type="Sprite2D" parent="Body"]
+position = Vector2(540, 359)
+texture = ExtResource("1_13amp")
+
+[node name="Tail" type="Sprite2D" parent="Body"]
+position = Vector2(363, 228)
+texture = ExtResource("2_e6j7f")
+
+[node name="LegBR" type="Sprite2D" parent="Body"]
+position = Vector2(361, 489)
+texture = ExtResource("3_xao0q")
+offset = Vector2(-4, 47)
+
+[node name="LegBL" type="Sprite2D" parent="Body"]
+position = Vector2(403, 492)
+texture = ExtResource("3_xao0q")
+offset = Vector2(-2, 44)
+
+[node name="LegFR" type="Sprite2D" parent="Body"]
+position = Vector2(621, 501)
+texture = ExtResource("3_xao0q")
+offset = Vector2(1, 41)
+
+[node name="LegFL" type="Sprite2D" parent="Body"]
+position = Vector2(659, 499)
+texture = ExtResource("3_xao0q")
+offset = Vector2(2, 40)
+
+[node name="Bones" type="Node2D" parent="."]
+
+[node name="Skeleton2D" type="Skeleton2D" parent="Bones"]
+
+[node name="Body" type="Bone2D" parent="Bones/Skeleton2D"]
+position = Vector2(722, 344)
+rest = Transform2D(1, 0, 0, 1, 722, 344)
+
+[node name="Bum" type="Bone2D" parent="Bones/Skeleton2D/Body"]
+position = Vector2(-373, -17)
+rest = Transform2D(1, 0, 0, 1, -373, -17)
+
+[node name="TailStart" type="Bone2D" parent="Bones/Skeleton2D/Body/Bum"]
+position = Vector2(-4, -91)
+rest = Transform2D(1, 0, 0, 1, -4, -91)
+
+[node name="TailMid" type="Bone2D" parent="Bones/Skeleton2D/Body/Bum/TailStart"]
+position = Vector2(-12, -94)
+rest = Transform2D(1, 0, 0, 1, -12, -94)
+
+[node name="TailEnd" type="Bone2D" parent="Bones/Skeleton2D/Body/Bum/TailStart/TailMid"]
+position = Vector2(55, -3)
+rest = Transform2D(1, 0, 0, 1, 55, -3)
+
+[node name="LegBRTop" type="Bone2D" parent="Bones/Skeleton2D/Body/Bum"]
+position = Vector2(12, 162)
+rest = Transform2D(1, 0, 0, 1, 12, 162)
+
+[node name="LegBRBot" type="Bone2D" parent="Bones/Skeleton2D/Body/Bum/LegBRTop"]
+position = Vector2(-9, 94)
+rest = Transform2D(1, 0, 0, 1, -9, 94)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Bones/Skeleton2D/Body/Bum/LegBRTop"]
+remote_path = NodePath("../../../../../../Body/LegBR")
+
+[node name="LegBLTop" type="Bone2D" parent="Bones/Skeleton2D/Body/Bum"]
+position = Vector2(54, 165)
+rest = Transform2D(1, 0, 0, 1, 54, 165)
+
+[node name="LegBLBot" type="Bone2D" parent="Bones/Skeleton2D/Body/Bum/LegBLTop"]
+position = Vector2(-7, 87)
+rest = Transform2D(1, 0, 0, 1, -7, 87)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Bones/Skeleton2D/Body/Bum/LegBLTop"]
+remote_path = NodePath("../../../../../../Body/LegBL")
+
+[node name="LegFRTop" type="Bone2D" parent="Bones/Skeleton2D/Body"]
+position = Vector2(-101, 157)
+rest = Transform2D(1, 0, 0, 1, -101, 157)
+
+[node name="LegFRBot" type="Bone2D" parent="Bones/Skeleton2D/Body/LegFRTop"]
+position = Vector2(-5, 86)
+rest = Transform2D(1, 0, 0, 1, -5, 86)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Bones/Skeleton2D/Body/LegFRTop"]
+remote_path = NodePath("../../../../../Body/LegFR")
+
+[node name="LegFLTop" type="Bone2D" parent="Bones/Skeleton2D/Body"]
+position = Vector2(-63, 155)
+rest = Transform2D(1, 0, 0, 1, -63, 155)
+
+[node name="LegFLBot" type="Bone2D" parent="Bones/Skeleton2D/Body/LegFLTop"]
+position = Vector2(-3, 85)
+rest = Transform2D(1, 0, 0, 1, -4, 85)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Bones/Skeleton2D/Body/LegFLTop"]
+remote_path = NodePath("../../../../../Body/LegFL")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_xao0q")
+}
