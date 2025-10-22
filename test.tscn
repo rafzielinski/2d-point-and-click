@@ -277,7 +277,6 @@ uv = PackedVector2Array(380.255, 240.866, 471.971, 241.12, 523.179, 206.982, 490
 bones = ["Root", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegBR", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegBR/TighBR", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegBL", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegBL/TighBL", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegFR", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegFR/TighFR", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegFL", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/LegFL/TighFL", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/Head", PackedFloat32Array(0.98, 0.98, 0.98, 0.98, 0.98, 0.98, 0.98, 0.98, 0.98, 0.98), "Root/Tail", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/Tail/TailMid", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "Root/Tail/TailMid/TailEnd", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)]
 
 [node name="Skeleton2D" type="Skeleton2D" parent="."]
-visible = false
 
 [node name="Root" type="Bone2D" parent="Skeleton2D"]
 position = Vector2(-2, -171)
