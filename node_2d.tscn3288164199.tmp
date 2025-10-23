@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://8uydl58u3gom"]
+
+[ext_resource type="Script" uid="uid://b2oknd2gddm5a" path="res://morph_polygon.gd" id="1_wtcfe"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="MorphPolygon" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(474, 338, 454, 380, 520, 421, 660, 419, 684, 388, 688, 331, 637, 250, 595, 284, 555, 239, 543, 307, 486, 227)
+script = ExtResource("1_wtcfe")
