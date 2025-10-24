@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ckydp3ucka0bj" path="res://assets/Untitled design.png" id="1_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://dvxxhc3k3qmb2" path="res://player.tscn" id="2_player"]
-[ext_resource type="Script" uid="uid://ee1d8dfl0100" path="res://interactive_area.gd" id="3_interactive"]
+[ext_resource type="Script" path="res://interactive_area.gd" id="3_interactive"]
 [ext_resource type="Script" uid="uid://71eltu6pvdny" path="res://scene_exit_button.gd" id="4_exit_button"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_tlwt5"]
@@ -86,8 +86,8 @@ script = ExtResource("4_exit_button")
 target_scene = "uid://dptfqeua8r40y"
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(636, 622)
+position = Vector2(1091, 425)
 scale = Vector2(1.44531, 372)
-color = Color(1, 0.286275, 1, 1)
+color = Color(0.97608787, 0.78482836, 0.6149392, 1)
 energy = 7.55
 texture = SubResource("GradientTexture1D_036b0")

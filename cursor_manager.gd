@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 # CursorManager - Singleton for managing custom cursor appearance
 # This autoload script handles cursor changes based on navigation layers and interactive areas
@@ -15,17 +15,15 @@ enum CursorType {
 var current_cursor_type: CursorType = CursorType.DEFAULT
 var current_navigation_layer: int = 0  # 0 means no nav layer (default)
 
-# Cursor colors for testing (easily visible colors)
-var cursor_colors: Dictionary = {
-	CursorType.DEFAULT: Color.BLACK,
-	CursorType.LAYER_1: Color.GREEN,
-	CursorType.LAYER_2: Color.BLUE,
-	CursorType.INTERACTIVE: Color.YELLOW
-}
+# Cursor textures (loaded from assets)
+var default_cursor_texture: Texture2D = load("res://assets/cursor/dot_small.svg")
+var layer1_cursor_texture: Texture2D = load("res://assets/cursor/steps.svg")
+var layer2_cursor_texture: Texture2D = load("res://assets/cursor/hand_point.svg")
+var interactive_cursor_texture: Texture2D = load("res://assets/cursor/hand_open.svg")
 
 # Reference to the cursor node (will be set up later)
 var cursor_node: Node2D = null
-var cursor_rect: ColorRect = null
+var cursor_texture_rect: TextureRect = null
 
 # Track areas we're hovering over
 var hovering_areas: Array[Area2D] = []
@@ -69,8 +67,8 @@ func _on_scene_change_requested(scene_path: String) -> void:
 	# Ensure custom cursor is visible
 	if cursor_node:
 		cursor_node.visible = true
-	if cursor_rect:
-		cursor_rect.visible = true
+	if cursor_texture_rect:
+		cursor_texture_rect.visible = true
 	
 	# Wait for scene to fully change, then update cursor state
 	_wait_for_scene_change()
@@ -123,28 +121,26 @@ func _create_cursor() -> void:
 	canvas_layer.name = "CursorCanvasLayer"
 	canvas_layer.layer = 100  # High layer number to be on top
 	canvas_layer.visible = true
-	
+
 	# Create a Node2D as the cursor root
 	cursor_node = Node2D.new()
 	cursor_node.name = "CustomCursor"
 	cursor_node.visible = true
 	cursor_node.z_index = 100  # Ensure it's on top
-	
-	# Create a ColorRect for visual representation
-	cursor_rect = ColorRect.new()
-	cursor_rect.size = Vector2(20, 20)
-	cursor_rect.position = Vector2(-10, -10)  # Center the cursor
-	cursor_rect.color = cursor_colors[CursorType.DEFAULT]
-	cursor_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Don't block mouse input!
-	cursor_rect.visible = true
-	
-	# Build the hierarchy: CanvasLayer -> Node2D -> ColorRect
-	cursor_node.add_child(cursor_rect)
+
+	# Create a TextureRect for visual representation
+	cursor_texture_rect = TextureRect.new()
+	cursor_texture_rect.texture = default_cursor_texture
+	cursor_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE  # Don't block mouse input!
+	cursor_texture_rect.visible = true
+
+	# Build the hierarchy: CanvasLayer -> Node2D -> TextureRect
+	cursor_node.add_child(cursor_texture_rect)
 	canvas_layer.add_child(cursor_node)
-	
+
 	# Add to the root scene
 	get_tree().root.call_deferred("add_child", canvas_layer)
-	
+
 	print("Cursor node created and added to scene tree")
 
 
@@ -207,13 +203,21 @@ func _on_area_mouse_exited(area: Area2D) -> void:
 func _set_cursor_type(type: CursorType) -> void:
 	if current_cursor_type == type:
 		return
-	
+
 	current_cursor_type = type
-	
-	# Update the cursor color
-	if cursor_rect:
-		cursor_rect.color = cursor_colors[type]
-	
+
+	# Update the cursor texture
+	if cursor_texture_rect:
+		match type:
+			CursorType.DEFAULT:
+				cursor_texture_rect.texture = default_cursor_texture
+			CursorType.LAYER_1:
+				cursor_texture_rect.texture = layer1_cursor_texture
+			CursorType.LAYER_2:
+				cursor_texture_rect.texture = layer2_cursor_texture
+			CursorType.INTERACTIVE:
+				cursor_texture_rect.texture = interactive_cursor_texture
+
 	print("Cursor changed to: ", CursorType.keys()[type])
 
 
